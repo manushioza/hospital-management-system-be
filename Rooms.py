@@ -70,3 +70,4 @@ async def delete_room(room_id: str):
     else:
         raise HTTPException(status_code=404, detail="Room not found")
     return {'message': 'Room Deleted.'}
+
