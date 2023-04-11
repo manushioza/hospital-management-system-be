@@ -7,3 +7,4 @@ cred = credentials.Certificate('coe892hms-firebase-adminsdk-qmde8-c8ff65daf4.jso
 app = firebase_admin.initialize_app(cred)
 
 db = firestore.client()
+
