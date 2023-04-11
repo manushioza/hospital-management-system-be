@@ -78,6 +78,22 @@ async def update_schedule(event_id: str,department_id:str = None, room_id:str = 
     
     schedule_ref = db.collection(u'schedule').document(event_id)
     schedule_doc = schedule_ref.get()
+
+    if start_date is None:
+            start_date = schedule_doc.get('start_date')
+    if end_date is None:
+            end_date = schedule_doc.get('end_date')        
+            # Check if doctor, patient, or room is already booked
+    schedules = db.collection(u'schedule').where(u'start_date', u'<=', end_date).where(u'start_date', u'>=', start_date).stream()
+
+    for schedule in schedules:
+        schedule_data = schedule.to_dict()
+        if schedule_data['doctor_id'] == doctor_id:
+            return {'message': 'Doctor already booked during this time.'}
+        elif schedule_data['patient_id'] == patient_id:
+            return {'message': 'Patient already booked during this time.'}
+        elif schedule_data['room_id'] == room_id:
+            return {'message': 'Room already booked during this time.'}
         
     if schedule_doc.exists:
         if department_id is not None:
