@@ -1,49 +1,72 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from firebase import db
 
 app = FastAPI()
 
 class Room(BaseModel):
-    id: int
-    type: str
-    number: int
-    quarantine: bool
+    room_id: int
+    room_type: str
+    room_number: int
+    room_availability: bool
 
-rooms_db = [
-    Room(id=1, type='Patient', number=101, quarantine=False),
-    Room(id=2, type='ER', number=102, quarantine=True),
-    Room(id=3, type='Operating', number=201, quarantine=False),
-    Room(id=4, type='Procedure', number=202, quarantine=False),
-]
 
 @app.get('/rooms')
 async def get_rooms():
+    rooms_db = {}
+    rooms_ref = db.collection(u'rooms')
+    docs = rooms_ref.stream()
+    for doc in docs:
+        rooms_db[doc.id] = doc.to_dict()
     return rooms_db
 
+
 @app.get('/rooms/{room_id}')
-async def get_room(room_id: int):
-    for room in rooms_db:
-        if room.id == room_id:
-            return room
-    return {'message': 'Room not found.'}
+async def get_room(room_id: str):
+    room = {}
+    room_ref = db.collection(u'rooms').document(room_id)
+    room_doc = room_ref.get()
+    if room_doc.exists:
+        room = room_doc.to_dict()  
+    else:
+        raise HTTPException(status_code=404, detail="Room not found")
+    return room
 
 @app.post('/rooms')
-async def create_room(room: Room):
-    rooms_db.append(room)
+async def create_room(r_num:int, r_type:str):
+    new_room = {
+        u'room_id': 0,
+        u'room_type': r_type,
+        u'room_number': r_num,
+        u'room_availability': True
+    }
+
+    room_ref = db.collection(u'rooms').document()
+    new_room['room_id'] = room_ref.id
+    room_ref.set(new_room)
+
     return {'message': 'Room created.'}
 
+
 @app.put('/rooms/{room_id}')
-async def update_room(room_id: int, room: Room):
-    for i, r in enumerate(rooms_db):
-        if r.id == room_id:
-            rooms_db[i] = room
-            return {'message': 'Room updated.'}
-    return {'message': 'Room not found.'}
+async def update_room(room_id: str, r_num:int, r_type: str, r_availability:bool):
+    room_ref = db.collection(u'rooms').document(room_id)
+    room_doc = room_ref.get()
+    if room_doc.exists:
+        room_ref.update({ u'room_type': r_type,
+                u'room_number': r_num,
+                u'room_availability': r_availability})
+    else:
+        raise HTTPException(status_code=404, detail="Room not found")
+    return {'message': 'Room Updated.'}
+
 
 @app.delete('/rooms/{room_id}')
-async def delete_room(room_id: int):
-    for i, room in enumerate(rooms_db):
-        if room.id == room_id:
-            rooms_db.pop(i)
-            return {'message': 'Room deleted.'}
-    return {'message': 'Room not found.'}
+async def delete_room(room_id: str):
+    room_ref = db.collection(u'rooms').document(room_id)
+    room_doc = room_ref.get()
+    if room_doc.exists:
+        room_ref.delete()
+    else:
+        raise HTTPException(status_code=404, detail="Room not found")
+    return {'message': 'Room Deleted.'}
