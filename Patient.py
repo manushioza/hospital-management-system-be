@@ -19,7 +19,7 @@ class Patient(BaseModel):
 
 
 @app.get('/patients')
-async def get_patient():
+async def get_patients():
     patient_db = {}
     patient_ref = db.collection(u'patients')
     docs = patient_ref.stream()
@@ -29,7 +29,7 @@ async def get_patient():
 
 
 @app.get('/patients/{patient_id}')
-async def get_room(patient_id: str):
+async def get_patient(patient_id: str):
     patient = {}
     patient_ref = db.collection(u'patients').document(patient_id)
     patient_doc = patient_ref.get()

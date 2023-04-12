@@ -101,7 +101,7 @@ def delete_room(room_id):
         print(f"Error {response.status_code}: {response.text}")
 
 
-def get_patient():
+def get_patients():
     response = requests.get(f"{base_url}/patients")
     if response.status_code == 200:
         patients = response.json()
@@ -359,7 +359,7 @@ while True:
         choice = input("Enter the number corresponding to your choice: ")
 
         if choice == "1":
-            get_patient()
+            get_patients()
         elif choice == "2":
             patient_id = input("Enter the Patients ID: ")
             get_patient(patient_id)
@@ -394,7 +394,7 @@ while True:
             break
         else:
             print("Invalid choice. Please enter a valid option.")
-    if choiceManagement == "4":
+    elif choiceManagement == "4":
         print("\nOptions:")
         print("1: Get all departments")
         print("2: Get a specific department")
@@ -424,7 +424,7 @@ while True:
             print("Exiting...")
             break
         else:
-            print("Invalid choice. Please enter a valid option.")  
+            print("Invalid choice. Please enter a valid option.")
     elif choiceManagement == "5":
         print("\nOptions:")
         print("1: Get all Schedules")
