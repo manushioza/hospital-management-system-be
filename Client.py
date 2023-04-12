@@ -100,10 +100,72 @@ def delete_room(room_id):
     else:
         print(f"Error {response.status_code}: {response.text}")
 
+
+def get_patient():
+    response = requests.get(f"{base_url}/patients")
+    if response.status_code == 200:
+        patients = response.json()
+        print(json.dumps(patients, indent=4))
+    else:
+        print(f"Error {response.status_code}: {response.text}")
+
+def get_patient(patient_id):
+    response = requests.get(f"{base_url}/patients/{patient_id}")
+    if response.status_code == 200:
+        patient = response.json()
+        print(json.dumps(patient, indent=4))
+    else:
+        print(f"Error {response.status_code}: {response.text}")
+
+def create_patient(first_name, last_name, email, age, phone_number,emergency_contact_name,emergency_contact_phone_number, emergency_contact_relationship, department_id):
+    payload = {
+        "first_name": first_name,
+        "last_name": last_name,
+        "age": age,
+        "email":email,
+        "phone_number":phone_number,
+        "emergency_contact_name":emergency_contact_name,
+        "emergency_contact_phone_number":emergency_contact_phone_number,
+        "emergency_contact_relationship":emergency_contact_relationship,
+        "department":department_id
+    }
+    response = requests.post(f"{base_url}/patients", params=payload)
+    if response.status_code == 200:
+        print(response.json())
+    else:
+        print(f"Error {response.status_code}: {response.text}")
+
+def update_patient(first_name, last_name, email, age, phone_number,emergency_contact_name,emergency_contact_phone_number, emergency_contact_relationship,  department_id):
+    payload = {
+        "first_name": first_name,
+        "last_name": last_name,
+        "age": age,
+        "email":email,
+        "phone_number":phone_number,
+        "emergency_contact_name":emergency_contact_name,
+        "emergency_contact_phone_number":emergency_contact_phone_number,
+        "emergency_contact_relationship":emergency_contact_relationship,
+        "department":department_id
+    }
+    response = requests.put(f"{base_url}/patients/{doctor_id}", params=payload)
+    if response.status_code == 200:
+        print(response.json())
+    else:
+        print(f"Error {response.status_code}: {response.text}")
+
+def delete_patient(patient_id):
+    response = requests.delete(f"{base_url}/patients/{patient_id}")
+    if response.status_code == 200:
+        print(response.json())
+    else:
+        print(f"Error {response.status_code}: {response.text}")
+
+
 while True:
     print("Choose a management option:")
     print("1: Doctor")
     print("2: Room")
+    print("3: Patient")
     
     choiceManagement = input("Enter the number corresponding to your choice: ")
 
@@ -183,3 +245,51 @@ while True:
             break
         else:
             print("Invalid choice. Please enter a valid option.")
+    elif choiceManagement == "3":
+        print("\nOptions:")
+        print("1: Get all Patients")
+        print("2: Get a specific Patient")
+        print("3: Create a new Patient")
+        print("4: Update a Patient")
+        print("5: Delete a Patient")
+        print("6: Exit")
+        
+        choice = input("Enter the number corresponding to your choice: ")
+
+        if choice == "1":
+            get_patient()
+        elif choice == "2":
+            patient_id = input("Enter the Patients ID: ")
+            get_patient(patient_id)
+        elif choice == "3":
+            first_name = input("Enter the first name: ")
+            last_name = input("Enter the last name: ")
+            email = input("Enter the email: ")
+            age = int(input("Enter the age: "))
+            phone_number = int(input("Enter the pager number: "))
+            emergency_contact_name = input("Enter the emergency contact name: ")
+            emergency_contact_phone_number = int(input("Enter the emergency contact phone number: "))
+            emergency_contact_relationship = input("Enter the emergency contact relationship: ")
+            department_id = input("Enter the department ID: ")
+            create_patient(first_name, last_name, email, age, phone_number,emergency_contact_name,emergency_contact_phone_number, emergency_contact_relationship,  department_id)
+        elif choice == "4":
+            patient_id = input("Enter patient id: ")
+            first_name = input("Enter the first name (-1 to keep the same): ")
+            last_name = input("Enter the last name (-1 to keep the same): ")
+            email = input("Enter the email (-1 to keep the same): ")
+            age = int(input("Enter the age (-1 to keep the same): "))
+            phone_number = int(input("Enter the pager number (-1 to keep the same): "))
+            emergency_contact_name = input("Enter the emergency contact name (-1 to keep the same): ")
+            emergency_contact_phone_number = int(input("Enter the emergency contact phone number (-1 to keep the same): "))
+            emergency_contact_relationship = input("Enter the emergency contact relationship (-1 to keep the same): ")
+            department_id = input("Enter the department ID (-1 to keep the same): ")
+            update_patient(patient_id, first_name, last_name, email, age, phone_number,emergency_contact_name,emergency_contact_phone_number, emergency_contact_relationship,  department_id)
+        elif choice == "5":
+            patient_id = input("Enter the patient ID: ")
+            delete_patient(patient_id)
+        elif choice == "6":
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Please enter a valid option.")
+    
