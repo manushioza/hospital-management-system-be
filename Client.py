@@ -100,7 +100,67 @@ def delete_room(room_id):
     else:
         print(f"Error {response.status_code}: {response.text}")
 
-def get_department():
+
+def get_patient():
+    response = requests.get(f"{base_url}/patients")
+    if response.status_code == 200:
+        patients = response.json()
+        print(json.dumps(patients, indent=4))
+    else:
+        print(f"Error {response.status_code}: {response.text}")
+
+def get_patient(patient_id):
+    response = requests.get(f"{base_url}/patients/{patient_id}")
+    if response.status_code == 200:
+        patient = response.json()
+        print(json.dumps(patient, indent=4))
+    else:
+        print(f"Error {response.status_code}: {response.text}")
+
+def create_patient(first_name, last_name, email, age, phone_number,emergency_contact_name,emergency_contact_phone_number, emergency_contact_relationship, department_id):
+    payload = {
+        "first_name": first_name,
+        "last_name": last_name,
+        "age": age,
+        "email":email,
+        "phone_number":phone_number,
+        "emergency_contact_name":emergency_contact_name,
+        "emergency_contact_phone_number":emergency_contact_phone_number,
+        "emergency_contact_relationship":emergency_contact_relationship,
+        "department":department_id
+    }
+    response = requests.post(f"{base_url}/patients", params=payload)
+    if response.status_code == 200:
+        print(response.json())
+    else:
+        print(f"Error {response.status_code}: {response.text}")
+
+def update_patient(first_name, last_name, email, age, phone_number,emergency_contact_name,emergency_contact_phone_number, emergency_contact_relationship,  department_id):
+    payload = {
+        "first_name": first_name,
+        "last_name": last_name,
+        "age": age,
+        "email":email,
+        "phone_number":phone_number,
+        "emergency_contact_name":emergency_contact_name,
+        "emergency_contact_phone_number":emergency_contact_phone_number,
+        "emergency_contact_relationship":emergency_contact_relationship,
+        "department":department_id
+    }
+    response = requests.put(f"{base_url}/patients/{doctor_id}", params=payload)
+    if response.status_code == 200:
+        print(response.json())
+    else:
+        print(f"Error {response.status_code}: {response.text}")
+
+def delete_patient(patient_id):
+    response = requests.delete(f"{base_url}/patients/{patient_id}")
+    if response.status_code == 200:
+        print(response.json())
+    else:
+        print(f"Error {response.status_code}: {response.text}")
+
+def get_departments():
     response = requests.get(f"{base_url}/departments")
     if response.status_code == 200:
         departments = response.json()
@@ -153,7 +213,7 @@ def get_schedules():
     else:
         print(f"Error {response.status_code}: {response.text}")
 
-def get_schedules(event_id):
+def get_schedule(event_id):
     response = requests.get(f"{base_url}/schedules/{event_id}")
     if response.status_code == 200:
         schedule = response.json()
@@ -204,7 +264,10 @@ while True:
     print("Choose a management option:")
     print("1: Doctor")
     print("2: Room")
-
+    print("3: Patient")
+    print("4: Department")
+    print("5: Schedule")
+    print("6: Exit")
     
     choiceManagement = input("Enter the number corresponding to your choice: ")
 
@@ -284,4 +347,129 @@ while True:
             break
         else:
             print("Invalid choice. Please enter a valid option.")
+    elif choiceManagement == "3":
+        print("\nOptions:")
+        print("1: Get all Patients")
+        print("2: Get a specific Patient")
+        print("3: Create a new Patient")
+        print("4: Update a Patient")
+        print("5: Delete a Patient")
+        print("6: Exit")
+        
+        choice = input("Enter the number corresponding to your choice: ")
+
+        if choice == "1":
+            get_patient()
+        elif choice == "2":
+            patient_id = input("Enter the Patients ID: ")
+            get_patient(patient_id)
+        elif choice == "3":
+            first_name = input("Enter the first name: ")
+            last_name = input("Enter the last name: ")
+            email = input("Enter the email: ")
+            age = int(input("Enter the age: "))
+            phone_number = int(input("Enter the pager number: "))
+            emergency_contact_name = input("Enter the emergency contact name: ")
+            emergency_contact_phone_number = int(input("Enter the emergency contact phone number: "))
+            emergency_contact_relationship = input("Enter the emergency contact relationship: ")
+            department_id = input("Enter the department ID: ")
+            create_patient(first_name, last_name, email, age, phone_number,emergency_contact_name,emergency_contact_phone_number, emergency_contact_relationship,  department_id)
+        elif choice == "4":
+            patient_id = input("Enter patient id: ")
+            first_name = input("Enter the first name (-1 to keep the same): ")
+            last_name = input("Enter the last name (-1 to keep the same): ")
+            email = input("Enter the email (-1 to keep the same): ")
+            age = int(input("Enter the age (-1 to keep the same): "))
+            phone_number = int(input("Enter the pager number (-1 to keep the same): "))
+            emergency_contact_name = input("Enter the emergency contact name (-1 to keep the same): ")
+            emergency_contact_phone_number = int(input("Enter the emergency contact phone number (-1 to keep the same): "))
+            emergency_contact_relationship = input("Enter the emergency contact relationship (-1 to keep the same): ")
+            department_id = input("Enter the department ID (-1 to keep the same): ")
+            update_patient(patient_id, first_name, last_name, email, age, phone_number,emergency_contact_name,emergency_contact_phone_number, emergency_contact_relationship,  department_id)
+        elif choice == "5":
+            patient_id = input("Enter the patient ID: ")
+            delete_patient(patient_id)
+        elif choice == "6":
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Please enter a valid option.")
+    if choiceManagement == "4":
+        print("\nOptions:")
+        print("1: Get all departments")
+        print("2: Get a specific department")
+        print("3: Create a new department")
+        print("4: Update a department")
+        print("5: Delete a department")
+        print("6: Exit")
+        
+        choice = input("Enter the number corresponding to your choice: ")
+
+        if choice == "1":
+            get_departments()
+        elif choice == "2":
+            department_id = input("Enter the Department ID: ")
+            get_department(department_id)
+        elif choice == "3":
+            department_name = input("Enter the department name: ")
+            create_department(department_name)
+        elif choice == "4":
+            department_id = input("Enter the Department ID: ")
+            department_name = input("Enter the department name: ")
+            update_department(department_id, department_name)
+        elif choice == "5":
+            department_id = input("Enter the Department ID: ")
+            delete_department(department_id)
+        elif choice == "6":
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Please enter a valid option.")  
+    elif choiceManagement == "5":
+        print("\nOptions:")
+        print("1: Get all Schedules")
+        print("2: Get a specific Schedule")
+        print("3: Create a new Schedule")
+        print("4: Update a Schedule")
+        print("5: Delete a Schedule")
+        print("6: Exit")
+        
+        choice = input("Enter the number corresponding to your choice: ")
+
+        if choice == "1":
+            get_schedules()
+        elif choice == "2":
+            event_id = input("Enter the Schedule ID: ")
+            get_schedule(event_id)
+        elif choice == "3":
+            department_id = input("Enter the Department ID: ")
+            room_id = input("Enter the Room ID: ")
+            patient_id = input("Enter the Patient ID: ")
+            doctor_id = input("Enter the Doctor ID: ")
+            start_date = input("Enter the Start Date(format: dd/mm/yyyy): ")
+            end_date = input("Enter the End Date(format: dd/mm/yyyy): ")
+            create_schedule(department_id, room_id,patient_id, doctor_id, start_date, end_date)
+        elif choice == "4":
+            event_id = input("Enter patient id: ")
+            department_id = input("Enter the Department ID: ")
+            room_id = input("Enter the Room ID: ")
+            patient_id = input("Enter the Patient ID: ")
+            doctor_id = input("Enter the Doctor ID: ")
+            start_date = input("Enter the Start Date(format: dd/mm/yyyy): ")
+            end_date = input("Enter the End Date(format: dd/mm/yyyy): ")
+            update_schedule(event_id,department_id, room_id,patient_id, doctor_id, start_date, end_date)
+        elif choice == "5":
+            event_id = input("Enter the schedule ID: ")
+            delete_schedule(event_id)
+        elif choice == "6":
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Please enter a valid option.")            
+
+    elif choiceManagement == "6":
+        print("Exiting...")
+        break
+    else:
+        print("Invalid choice. Please enter a valid option.")
     

@@ -13,7 +13,7 @@ class Patient(BaseModel):
     phone_number:int
     emergency_contact_name:str
     emergency_contact_phone_number:int
-    emergency_contact_rlationship:str
+    emergency_contact_relationship:str
     department:str
 
 
