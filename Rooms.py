@@ -15,9 +15,9 @@ class Room(BaseModel):
 async def get_rooms():
     rooms_db = {}
     rooms_ref = db.collection(u'rooms')
-    docs = rooms_ref.stream()
-    for doc in docs:
-        rooms_db[doc.id] = doc.to_dict()
+    rooms = rooms_ref.stream()
+    for room in rooms:
+        rooms_db[room.id] = room.to_dict()
     return rooms_db
 
 
