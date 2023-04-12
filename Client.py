@@ -450,7 +450,7 @@ while True:
             end_date = input("Enter the End Date(format: dd/mm/yyyy): ")
             create_schedule(department_id, room_id,patient_id, doctor_id, start_date, end_date)
         elif choice == "4":
-            event_id = input("Enter patient id: ")
+            event_id = input("Enter schedule id: ")
             department_id = input("Enter the Department ID: ")
             room_id = input("Enter the Room ID: ")
             patient_id = input("Enter the Patient ID: ")
